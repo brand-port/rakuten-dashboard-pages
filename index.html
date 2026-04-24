@@ -17,22 +17,19 @@ a:hover { text-decoration: underline; }
 <h1>楽天市場アナリティクス</h1>
 <ul id="stores"></ul>
 <script>
-fetch('https://api.github.com/repos/brand-port/bpg-skills/contents/skills/rakuten-dashboard/stores')
+fetch('https://api.github.com/repos/brand-port/rakuten-dashboard-pages/contents/')
   .then(r => r.json())
-  .then(files => {
+  .then(items => {
     const ul = document.getElementById('stores');
-    files.filter(f => f.name.endsWith('.json')).forEach(f => {
-      const name = f.name.replace('.json', '');
+    items.filter(i => i.type === 'dir' && !i.name.startsWith('.')).forEach(d => {
       const li = document.createElement('li');
-      li.innerHTML = '<a href="' + name + '/">' + name + '</a>';
+      li.innerHTML = '<a href="' + d.name + '/">' + d.name + '</a>';
       ul.appendChild(li);
     });
   })
   .catch(() => {
     document.getElementById('stores').innerHTML =
-      '<li><a href="nagara-shop/">nagara-shop</a></li>' +
-      '<li><a href="beauty/">beauty</a></li>' +
-      '<li><a href="belluna/">belluna</a></li>';
+      '<li><a href="nagara-shop/">nagara-shop</a></li>';
   });
 </script>
 </body>
