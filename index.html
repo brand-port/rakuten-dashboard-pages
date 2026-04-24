@@ -83,7 +83,10 @@ body {
 <body>
 <header class="app-header">
   <div class="header-inner">
-    <div class="header-title">Rakuten Analytics</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+      <img src="cards_logo.png" alt="CARDS" style="height:28px;filter:brightness(0) invert(1)" onerror="this.style.display='none'">
+      <div style="font-size:12px;color:#fff;letter-spacing:1px;font-weight:500">楽天市場アナリティクス</div>
+    </div>
   </div>
 </header>
 <div class="main-content">
@@ -94,9 +97,9 @@ body {
 <script>
 const STORE_NAMES = {
   'nagara-shop': 'ナガラ食品',
-  'beauty': 'Beauty',
-  'belluna': 'Belluna',
-  'hyakufukudo': '百福堂',
+  'beauty': 'Beauty店舗',
+  'belluna': 'Belluna店舗',
+  'hyakufukudo': '百福堂（ひゃくふくどう）',
   'kansaikoso': '関西酵素公式ショップ楽天市場店'
 };
 
