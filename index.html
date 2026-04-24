@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>楽天市場アナリティクス</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; color: #333; }
+h1 { font-size: 1.4em; border-bottom: 2px solid #bf0000; padding-bottom: 8px; }
+ul { list-style: none; padding: 0; }
+li { margin: 12px 0; }
+a { color: #bf0000; text-decoration: none; font-size: 1.1em; }
+a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1>楽天市場アナリティクス</h1>
+<ul id="stores"></ul>
+<script>
+fetch('https://api.github.com/repos/brand-port/bpg-skills/contents/skills/rakuten-dashboard/stores')
+  .then(r => r.json())
+  .then(files => {
+    const ul = document.getElementById('stores');
+    files.filter(f => f.name.endsWith('.json')).forEach(f => {
+      const name = f.name.replace('.json', '');
+      const li = document.createElement('li');
+      li.innerHTML = '<a href="' + name + '/">' + name + '</a>';
+      ul.appendChild(li);
+    });
+  })
+  .catch(() => {
+    document.getElementById('stores').innerHTML =
+      '<li><a href="nagara-shop/">nagara-shop</a></li>' +
+      '<li><a href="beauty/">beauty</a></li>' +
+      '<li><a href="belluna/">belluna</a></li>';
+  });
+</script>
+</body>
+</html>
