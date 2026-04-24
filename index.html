@@ -5,31 +5,131 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>楽天市場アナリティクス</title>
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; color: #333; }
-h1 { font-size: 1.4em; border-bottom: 2px solid #bf0000; padding-bottom: 8px; }
-ul { list-style: none; padding: 0; }
-li { margin: 12px 0; }
-a { color: #bf0000; text-decoration: none; font-size: 1.1em; }
-a:hover { text-decoration: underline; }
+:root {
+  --c-primary: #1a3a5c;
+  --c-primary-light: #2d5f8a;
+  --c-primary-bg: rgba(26,58,92,0.06);
+  --c-bg: #f3f5f9;
+  --c-surface: #ffffff;
+  --c-border: #e8eaed;
+  --c-text: #1a1a2e;
+  --c-text-secondary: #5f6368;
+  --c-text-muted: #9aa0a6;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.1);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--c-bg); color: var(--c-text); line-height: 1.5; font-size: 14px;
+}
+.app-header {
+  background: var(--c-primary); color: #fff; padding: 0 24px;
+  box-shadow: var(--shadow-md);
+}
+.header-inner {
+  max-width: 1440px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.header-title {
+  font-size: 18px; font-weight: 700; letter-spacing: 1.5px;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+  text-transform: uppercase;
+}
+.main-content {
+  max-width: 960px; margin: 0 auto; padding: 40px 24px;
+}
+.page-title {
+  font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--c-text);
+}
+.page-desc {
+  font-size: 14px; color: var(--c-text-secondary); margin-bottom: 32px;
+}
+.stores-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.store-card {
+  background: var(--c-surface); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--c-border);
+  padding: 24px; text-decoration: none; color: inherit;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.store-card:hover {
+  box-shadow: var(--shadow-md); transform: translateY(-2px);
+}
+.store-name {
+  font-size: 16px; font-weight: 700; color: var(--c-primary);
+}
+.store-id {
+  font-size: 12px; color: var(--c-text-muted); font-family: 'SF Mono', 'Consolas', monospace;
+}
+.store-arrow {
+  margin-top: 8px; font-size: 13px; color: var(--c-primary-light); font-weight: 500;
+}
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.store-card { animation: fadeInUp 0.3s ease-out backwards; }
+.store-card:nth-child(2) { animation-delay: 0.05s; }
+.store-card:nth-child(3) { animation-delay: 0.1s; }
+.store-card:nth-child(4) { animation-delay: 0.15s; }
+.store-card:nth-child(5) { animation-delay: 0.2s; }
+.store-card:nth-child(6) { animation-delay: 0.25s; }
 </style>
 </head>
 <body>
-<h1>楽天市場アナリティクス</h1>
-<ul id="stores"></ul>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="header-title">Rakuten Analytics</div>
+  </div>
+</header>
+<div class="main-content">
+  <h1 class="page-title">店舗一覧</h1>
+  <p class="page-desc">ダッシュボードを表示する店舗を選択してください</p>
+  <div class="stores-grid" id="stores"></div>
+</div>
 <script>
+const STORE_NAMES = {
+  'nagara-shop': 'ナガラ食品',
+  'beauty': 'Beauty',
+  'belluna': 'Belluna',
+  'hyakufukudo': '百福堂',
+  'kansaikoso': '関西酵素公式ショップ楽天市場店'
+};
+
 fetch('https://api.github.com/repos/brand-port/rakuten-dashboard-pages/contents/')
   .then(r => r.json())
   .then(items => {
-    const ul = document.getElementById('stores');
-    items.filter(i => i.type === 'dir' && !i.name.startsWith('.')).forEach(d => {
-      const li = document.createElement('li');
-      li.innerHTML = '<a href="' + d.name + '/">' + d.name + '</a>';
-      ul.appendChild(li);
-    });
+    const grid = document.getElementById('stores');
+    items
+      .filter(i => i.type === 'dir' && !i.name.startsWith('.'))
+      .forEach(d => {
+        const display = STORE_NAMES[d.name] || d.name;
+        const a = document.createElement('a');
+        a.className = 'store-card';
+        a.href = d.name + '/';
+        a.innerHTML =
+          '<div class="store-name">' + display + '</div>' +
+          '<div class="store-id">' + d.name + '</div>' +
+          '<div class="store-arrow">ダッシュボードを開く →</div>';
+        grid.appendChild(a);
+      });
   })
   .catch(() => {
-    document.getElementById('stores').innerHTML =
-      '<li><a href="nagara-shop/">nagara-shop</a></li>';
+    const grid = document.getElementById('stores');
+    Object.entries(STORE_NAMES).forEach(([id, name]) => {
+      const a = document.createElement('a');
+      a.className = 'store-card';
+      a.href = id + '/';
+      a.innerHTML =
+        '<div class="store-name">' + name + '</div>' +
+        '<div class="store-id">' + id + '</div>' +
+        '<div class="store-arrow">ダッシュボードを開く →</div>';
+      grid.appendChild(a);
+    });
   });
 </script>
 </body>
